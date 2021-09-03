@@ -6,7 +6,10 @@ const repoSchema = new Schema({
         required: true,
         unique: true,
     },
-    database: {
+    kind: {
+        type: String,
+    },
+    databaseTech: {
         type: String,
     },
     apiType: {

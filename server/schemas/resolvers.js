@@ -1,4 +1,5 @@
 const { Repo } = require('../models');
+const createRepo = require('../utils/createRepo')
 
 const resolvers = {
     Query: {
@@ -11,8 +12,10 @@ const resolvers = {
         },
     },
     Mutation: {
-        createRepo: async(parent, args) => {
-            const repository = await repository.create(args);
+        outlineRepo: async(parent, args) => {
+            const repository = await Repo.create(args);
+            console.log(repository._doc)
+            createRepo(repository._doc)
             return repository;
         }
     },
