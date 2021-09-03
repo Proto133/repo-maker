@@ -5,6 +5,9 @@
     "main": "server/server.js",
     "devDependencies": {},
     "scripts": {
+        "install": "cd server && npm i && cd ../client && npm i",
+        "build": "cd client && npm run build",
+        "dev": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -16,5 +19,8 @@
     "bugs": {
         "url": "https://github.com/Proto133/repo-maker/issues"
     },
-    "homepage": "https://github.com/Proto133/repo-maker#readme"
+    "homepage": "https://github.com/Proto133/repo-maker#readme",
+    "dependencies": {
+        "concurrently": "^6.2.1"
+    }
 }
