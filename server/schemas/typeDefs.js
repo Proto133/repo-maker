@@ -17,6 +17,7 @@ const typeDefs = gql `
 
   type Mutation {
     outlineRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String): Repo
+    genModel(name: String!, )
   }
 `;
 
