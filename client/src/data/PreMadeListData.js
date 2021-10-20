@@ -1,5 +1,5 @@
 let PreMadeListData = [{
-            title: 'FullStack MERN_R',
+            title: 'MERN_R',
             type: 'FullStack',
             description:{
             headline:'This repo is designed with the following features:',
@@ -14,7 +14,7 @@ let PreMadeListData = [{
             api:{
                 type:'RESTful',
                 tool:{
-                    name:'None', 
+                    name:'', 
                     link:''
                 }
             },
@@ -58,7 +58,7 @@ let PreMadeListData = [{
       
             repolink: '/repositories/premade/F_MERN_G'
         }, {
-            title: 'MERN_R',
+            title: 'MyERN_R',
             type:'FullStack',
             description: {headline:'This repo is designed with the following features:',
             db:{
@@ -84,7 +84,7 @@ let PreMadeListData = [{
                 name:'React',
                 link:'https://reactjs.org'
             } },
-                     link: '/repositories/premade/F_MERN_R'
+            link: '/repositories/premade/F_MERN_R'
             }]
 
         export default PreMadeListData

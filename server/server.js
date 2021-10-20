@@ -1,34 +1,47 @@
 const express = require('express');
 const path = require('path');
-const { ApolloServer } = require('apollo-server-express');
 const db = require('./config/connection');
-const { typeDefs, resolvers } = require('./schemas');
-
+require('dotenv').config();
+  
+const cors = require('cors');
+const corsOptions ={origin: 'http://localhost:3000'}
+      // importing ApolloServer
+const { ApolloServer } = require('apollo-server-express');
+  
+// importing typeDefs and resolvers
+const { typeDefs, resolvers } = require('./schemas')
+// COMMENT BACK IN IF USING JWT or Other AUTH_MIDDLEWARE
+// const { authMiddleware } = require('./utils/auth')
+  
 const app = express();
 const PORT = process.env.PORT || 3001;
+  
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-
+      typeDefs,
+      resolvers,
+      // context: authMiddleware
+})
+  
+// applying Apollo middleware here
 server.applyMiddleware({ app });
+  
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+  
 // if we're in production, serve client/build as static assets
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+    app.use(express.static(path.join(__dirname, '../client/build')));
 }
-
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-
+  
+app.use(cors(corsOptions))
 db.once('open', () => {
-  app.listen(PORT, () => {
-    console.log(`API server running on port ${PORT}!`);
-    // log where we can go to test our GQL API
-    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
-  });
+    app.listen(PORT, () => {
+        console.log('🌍 Now listening on localhost:'+PORT)
+        console.log('Use GraphQL at http://localhost:'+PORT+server.graphqlPath);
+    });
+  
 });

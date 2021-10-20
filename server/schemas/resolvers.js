@@ -1,5 +1,6 @@
 const { Repo } = require('../models');
-const createRepo = require('../utils/createRepo')
+// const createRepo = require('../utils/createRepo')
+const makeRepo = require('../utils/makeRepo')
 
 const resolvers = {
     Query: {
@@ -15,7 +16,7 @@ const resolvers = {
         outlineRepo: async(parent, args) => {
             const repository = await Repo.create(args);
             console.log(repository._doc)
-            createRepo(repository._doc)
+            makeRepo(repository._doc)
             return repository;
         }
     },

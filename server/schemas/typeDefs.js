@@ -12,12 +12,12 @@ const typeDefs = gql `
 
   type Query {
     repos:[Repo]
-    repo(_id: String): [Repo]
+    repo(_id: String):Repo
   }
 
   type Mutation {
     outlineRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String): Repo
-    genModel(name: String!, )
+    genModel(name: String!):Repo
   }
 `;
 
