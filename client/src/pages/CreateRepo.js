@@ -5,50 +5,103 @@ import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import fileDefs from '../data/fileDefs'
+import GEN_INDEX_HTML_DATA from '../data/GenHTMLData'
+import {DIRECT_WRITE_REPO} from '../utils/mutations'
+import {useMutation, useQuery} from '@apollo/react-hooks';
 import FormControl from 'react-bootstrap/FormControl'
 import Stack from 'react-bootstrap/Stack'
 
 export default function CreateRepo(){
-    const [frontEndTech,setFrontEndTech]= useState({js: false, html: false, css: false})
+    const [writeRepo,{writeRepoLoading, writeRepoError}] = useMutation(DIRECT_WRITE_REPO)
     const [repoDetails, setRepoDetails] = useState({
-            name: '',
-            kind: '',
+        name: null,
+        kind: null,
             db:{
-                name:'',
-                link:''
+                name:null,
+                link:null
             },
             orm:{
-                name:'',
-                link: '',
-                models:['']
+                name:null,
+                link: null,
+                models:[null]
             },
             api:{
-                type:'RESTful',
+                type:null,
                 tool:{
-                    name:'', 
-                    link:''
+                    name:null, 
+                    link:null
                 }
             },
             server: {
-                name:'Express',
-                link:'https://expressjs.com'
+                name:null,
+                link:null
             },
             frontend:{
-                name:'React',
-                link:'https://reactjs.org'
+                name:null,
+                link:null
             },
-            repolink: ''
-    })
-
+            content:[null],
+            repolink: null
+        })
+    const [frontEndTech, setFrontEndTech]= useState({
+        
+           html:{ 
+           value: false, 
+           data: fileDefs.indexHTML
+        },
+           css:{
+           value: false, 
+           data: fileDefs.styleCSS
+        },
+            js:{ 
+            value:false,
+            data: fileDefs.scriptJS
+        }})
+    let indexHTMLData = GEN_INDEX_HTML_DATA(repoDetails.name, frontEndTech.css, frontEndTech.js)
+        
+    
+    const [newFile, setNewFile] = useState([])
+    const [contentList, setContentList] = useState([])
+   
     const handleFECheck = (name, value) =>{
-        setFrontEndTech({...frontEndTech, [name]:value})
+        frontEndTech[name].value = value
+        console.log(frontEndTech)
     }
-    // useEffect(()=>console.table(frontEndTech))
+      
+    
+    
+const genFiles =() =>{
+    let files = Object.entries(frontEndTech)   
+    fileDefs.indexHTML.self.data = indexHTMLData
+    let content = [];
+    files.forEach(item => { item[1].value ? content.push(item[1].data): console.log(item[0], 'is not checked')
+       console.log(content)
+    } )
+    setContentList([...contentList , ...content]) 
+}
+useEffect(()=> {
+    setRepoDetails({...repoDetails, 'content': contentList})
+    console.log(contentList)}, [])
 
     const handleInput = (name, value) =>{
         setRepoDetails({...repoDetails, [name]:value})
     }
-    useEffect(()=>console.table(repoDetails))
+
+    const handleSaveProject = async () => {
+        console.log('Save Project Clicked');
+    await genFiles()    
+    try{
+        await writeRepo({variables:{...repoDetails}})
+        if (writeRepoLoading) {
+            console.log(`Loading. . .`)
+        }
+        if (writeRepoError) {
+            throw new Error(`So, that shit didn't work`)
+        }
+    } catch(err) { console.error(err.msg) }
+    }
+    useEffect(()=>console.dir(repoDetails))
     return(
     <div>
         <h2> This is the Create a Repo Page.</h2>
@@ -85,14 +138,14 @@ export default function CreateRepo(){
                     <div style={{border: '1px solid rgba(0 , 0, 0, .2)', flex: '0 0 40%', height:'100%', borderRadius: '3px', padding: '1rem'}}>
                         <h5> What will you be using for this project?</h5>
                         <Form.Check type="checkbox" id="html-checkbox" name='html' label="HTML" onChange={(e)=>handleFECheck('html', e.target.checked)}/>
-                        <Form.Check type="checkbox" id="css-checkbox" name='css' label="CSS" onChange={(e)=>handleFECheck('css', e.target.checked)}/>
+                        <Form.Check type="checkbox" id="css-checkbox" name='css'  label="CSS" onChange={(e)=>handleFECheck('css', e.target.checked)}/>
                         <Form.Check type="checkbox" id="js-checkbox" name='js' label="JavaScript" onChange={(e)=>handleFECheck('js', e.target.checked)}/>
                         <sub><em> If you are planning on using React, just use</em> <code style={{padding: '.1rem', color:'grey', backgroundColor:'black'}}>create-react-app</code> <em>in your terminal.</em></sub>
                     </div>          
                     </Col>
                     <Col>
                     <Container align="center"  style={{paddingTop:"2rem"}}>
-                    <Button disabled={false}>Save Project</Button>
+                    <Button disabled={false} onClick={handleSaveProject}>Save Project</Button>
                     </Container>
                     </Col>
                 </Row>
