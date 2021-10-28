@@ -4,40 +4,34 @@ const typeDefs = gql `
   type Repo {
     _id: ID
     name: String
+    kind: String
     databaseTech: String
-    models: String
+    # models: String
     apiType: String
     frontend: String
-    content:[File]
+    content:[Content]
     }
+  type Content{
+    _id: ID
+    repoID: ID
+    level: Int
+    parent: String
+    selfType: String
+    selfName: String
+  }
 
   type Query {
     repos:[Repo]
-    repo(_id: String):Repo
+    repo(_id: ID!):Repo
+    content(repoID: ID!):[Content]
   }
 
-type File{
-  name: String
-  type: String
-  data: String
-}
 
-# type Data{
-#   level: Int,
-#   parent: String,
-#   self: Self
-# }
-
-# type Self{
-#   type: String,
-#   name: String,
-#   data: String
-# }
 
   type Mutation {
     outlineRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String): Repo
-    directWriteRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String, content: String): Repo
-    genModel(name: String!):Repo
+    # directWriteRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String, content: String): Repo
+    saveContent(repoID: ID!, level: Int, parent: String, selfType: String, selfName: String): Content
   }
 `;
 

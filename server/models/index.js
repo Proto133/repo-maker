@@ -1,3 +1,3 @@
 const Repo = require('./Repo');
-
-module.exports = { Repo };
+const Content = require('./Content');
+module.exports= {Repo, Content};
