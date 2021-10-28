@@ -7,13 +7,20 @@ import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import fileDefs from "../data/fileDefs";
 import GEN_INDEX_HTML_DATA from "../data/GenHTMLData";
-import { DIRECT_WRITE_REPO } from "../utils/mutations";
+import { SAVE_REPO_CONTENT, SAVE_REPO } from "../utils/mutations";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import FormControl from "react-bootstrap/FormControl";
 import Stack from "react-bootstrap/Stack";
 
 export default function CreateRepo() {
-  const [writeRepo, { writeRepoLoading, writeRepoError }] = useMutation(DIRECT_WRITE_REPO , console.log('Mutation'));
+ const [repoRefID, setRepoRefID] =useState('')
+  const [saveRepo,{saveRepoLoading, saveRepoError }] = useMutation(SAVE_REPO,{ 
+    onCompleted: ({saveRepo}) =>{
+    setRepoRefID(saveRepo._id)
+    console.log(saveRepo._id)
+   }
+  })
+  const [saveContent, { saveContentLoading, saveContentError }] = useMutation(SAVE_REPO_CONTENT);
   const [repoDetails, setRepoDetails] = useState({
     name: null,
     kind: null,
@@ -101,53 +108,73 @@ export default function CreateRepo() {
     repoDetails.content =[]
     setContentList([])
     let files = Object.entries(frontEndTech);
-    console.log(files)
+    // console.log(files)
     fileDefs.indexHTML.self.data = indexHTMLData;
     let content = new Set()
     files.forEach((item) => {
       item[1].value
         ? content.add(item[1].data)
         : console.log(item[0], "is not checked");
-      console.log(content);
+      // console.log(content);
     });
     setContentList(Array.from(content));
   };
   
   const handleInput = (name, value) => {
-    console.log(name, value);
+    // console.log(name, value);
     if (name === "kind" && value === "Front-End") {
       console.log("HandleInput if hit");
       repoDetails.frontend.name = "Custom" ;
     }
     setRepoDetails({ ...repoDetails, [name]: value });
   };
-  
-  const handleSaveProject = () => {
-    console.log("Save Project Clicked");
-    genFiles();
+
+  const addContentToRepo = async (item)=>{
+      const {level, parent, self} = item;
+      console.log({repoRefID})
+      console.log({item})
+      await saveContent({
+        variables:{
+          repoID: repoRefID,
+          level: level,
+          parent: parent,
+          selfType: self.type,
+          selfName: self.name,
+          selfData: self.data}})
+          if (saveContentLoading) {
+            console.log(`Loading. . .`);
+          }
+          if (saveContentError) {
+            throw new Error(`So, that shit didn't work`);
+          }
     
-  };
-  
-  const handleWriteRepo = async () =>{
-    try {
-      let newrepo= {name: repoDetails.name, kind: repoDetails.kind, content: JSON.stringify(repoDetails.content)}
-      await writeRepo({
-        variables: newrepo
-      });
-      if (writeRepoLoading) {
-        console.log(`Loading. . .`);
-      }
-      if (writeRepoError) {
-        throw new Error(`So, that shit didn't work`);
-      }
-    } catch (err) {
-      throw err;
-    }
-    setContentList([])
-    repoDetails.content =[]
   }
   
-  useEffect(() => console.dir(repoDetails));
+  const handleSaveProject = async () => {
+    console.log("Save Project Clicked");
+    await genFiles();
+    try {
+      let newRepo = {name:repoDetails.name, kind:repoDetails.kind, databaseTech: repoDetails.db.name, apiType: repoDetails.api.type, frontend: repoDetails.frontend.name }
+      await saveRepo({
+        variables: newRepo
+      
+      });
+      if (saveRepoLoading) {
+        console.log(`Loading. . .`);
+      }
+      if (saveRepoError) {
+        throw new Error(`So, that shit didn't work`);
+      }
+    
+      } catch (err) {
+        throw err;
+      }
+      contentList.forEach(item => {
+        addContentToRepo(item)
+      })
+
+  };
+  
   useEffect(() => { 
     setRepoDetails({ ...repoDetails, content: contentList })
   }, [contentList]);
@@ -256,9 +283,9 @@ export default function CreateRepo() {
                   <Button disabled={false} onClick={handleSaveProject}>
                     Save Project
                   </Button>
-                  <Button disabled={false} onClick={handleWriteRepo}>
+                  {/* <Button disabled={false} onClick={handleWriteRepo}>
                     Write to Server
-                  </Button>
+                  </Button> */}
                 </Container>
               </Col>
             </Row>
