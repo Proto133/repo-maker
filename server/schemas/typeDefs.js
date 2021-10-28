@@ -32,6 +32,7 @@ const typeDefs = gql `
     outlineRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String): Repo
     # directWriteRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String, content: String): Repo
     saveContent(repoID: ID!, level: Int, parent: String, selfType: String, selfName: String): Content
+    removeRepo(repoID: ID!): Repo
   }
 `;
 

@@ -54,7 +54,18 @@ const resolvers = {
             const addToRepo = await db.Repo.findOneAndUpdate({_id: args.repoID}, {$addToSet: {content: repoContent._id}})
             console.log(repoContent._doc)
             return repoContent
+        },
+        removeRepo: async(parent, args) => {
+            const targetID = args.repoID
+            try{
+            await db.Content.deleteMany({repoID: targetID})
+            const deletedRepo= await db.Repo.findByIdAndDelete(targetID)
+        return deletedRepo   
         }
+            catch (err) {throw err}
+        
+            }
+        
     },
 };
 
