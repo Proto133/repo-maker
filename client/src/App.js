@@ -5,11 +5,22 @@ import Tab from 'react-bootstrap/Tab'
 import CreateRepo from './pages/CreateRepo'
 import PreMade from './pages/PreMade'
 import Home from './pages/Home'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider, InMemoryCache, ApolloClient } from '@apollo/client'
+// import ApolloClient from "apollo-boost";
 // import Dropdown from 'react-bootstrap/Dropdown'
-const client = new ApolloProvider({
-  uri: "/graphql",
+const client = new ApolloClient({
+  // request: (operation) => {
+  //   // const token = localStorage.getItem("id_token");
+  //   operation.setContext({
+  //     headers: {
+  //       authorization: 'token' ? `Bearer token` : "",
+  //     },
+  //   });
+  // },
+  cache: new InMemoryCache(),
+  uri: "http://localhost:3001/graphql",
 });
+
 function App() {
   return (
     <ApolloProvider client={client}>

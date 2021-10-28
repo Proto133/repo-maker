@@ -18,6 +18,10 @@ const resolvers = {
             console.log(repository._doc)
             makeRepo(repository._doc)
             return repository;
+        },
+        directWriteRepo: async(parent, args) =>{
+            console.log(args)
+            makeRepo(args)
         }
     },
 };
