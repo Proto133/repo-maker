@@ -2,6 +2,16 @@ const { Repo } = require('../models');
 // const createRepo = require('../utils/createRepo')
 const makeRepo = require('../utils/makeRepo')
 
+const compare= (a,b)=>{
+    if ( a.level < b.level ){
+        return -1;
+      }
+      if ( a.level > b.level ){
+        return 1;
+      }
+      return 0;
+    }
+
 const resolvers = {
     Query: {
         repo: async() => {
@@ -20,7 +30,14 @@ const resolvers = {
             return repository;
         },
         directWriteRepo: async(parent, args) =>{
-            console.log(args)
+            let content = JSON.parse(args.content)
+            let contentArray =[]
+            content.forEach(item => contentArray.push(item))
+            contentArray.sort(compare)
+            console.log(contentArray)
+            args.content = contentArray
+
+            console.dir(args)
             makeRepo(args)
         }
     },

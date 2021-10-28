@@ -22,10 +22,21 @@ type File{
   data: String
 }
 
+# type Data{
+#   level: Int,
+#   parent: String,
+#   self: Self
+# }
+
+# type Self{
+#   type: String,
+#   name: String,
+#   data: String
+# }
 
   type Mutation {
     outlineRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String): Repo
-    directWriteRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String content:String):Repo
+    directWriteRepo(name: String!, kind: String, databaseTech: String, models: String, apiType: String, frontend: String, content: String): Repo
     genModel(name: String!):Repo
   }
 `;

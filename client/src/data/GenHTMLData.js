@@ -1,8 +1,8 @@
 const GEN_INDEX_HTML_DATA = (projectTitle, css , js)=>{
     let cssTag
-    let jsTag
-    if(css){cssTag = `<link rel="stylesheet" type="text/css" href="./assets/css/style.css">`}
-    if(js) {jsTag = `<script defer type="text/javascript" src="./assets/js/script.js>`}
+    let jsTag 
+    css ? cssTag = `<link rel="stylesheet" type="text/css" href="./assets/css/style.css">`: cssTag = null
+    js ? jsTag = `<script defer type="text/javascript" src="./assets/js/script.js"></script>`: jsTag = null
 return(`
 <!DOCTYPE html>
 <html lang="en">

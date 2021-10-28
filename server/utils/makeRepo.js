@@ -37,6 +37,8 @@ const makeRepo = async (RepoInfo) => {
     
     // const makeDirs = () => {
         content?.map(item => {
+            console.log((`\nMAKEREPO \n`))
+            console.dir(item)
             let ext = path.extname(item.self.name)
             let comment 
             if(ext === '.js' || ext === '.json'){ comment = '//'} 
@@ -48,9 +50,8 @@ const makeRepo = async (RepoInfo) => {
                 writeRepo.dir({dirPath: path.join(repoRoot, item.parent),name: item.self.name})
             }
 
-            if (item.self.type === 'file' && fs.existsSync(path.join(repoRoot, item.parent))){
-    
-                writeRepo.file({filePath: path.join(repoRoot, item.parent, item.self.name), data: item.self.data? item.self.data :`${comment} This is code for the ${item.self.name} file`})
+            if (item.self.type === 'file'){
+            writeRepo.file({filePath: path.join(repoRoot, item.parent, item.self.name), data: item.self.data? item.self.data :`${comment} This is code for the ${item.self.name} file`})
             }
         })
     // }

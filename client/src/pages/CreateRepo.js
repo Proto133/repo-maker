@@ -58,12 +58,24 @@ export default function CreateRepo() {
       value: false,
       data: fileDefs.scriptJS,
     },
+    assets:{
+      value:false,
+      data: fileDefs.assetsDir
+    },
+    assetsJS: {
+      value:false,
+      data: fileDefs.assetsJS
+    },
+    assetsCSS: {
+      value:false,
+      data: fileDefs.assetsCSS
+    }
   });
  
   let indexHTMLData = GEN_INDEX_HTML_DATA(
     repoDetails.name,
-    frontEndTech.css,
-    frontEndTech.js
+    frontEndTech.css.value,
+    frontEndTech.js.value
   );
 
   const [newFile, setNewFile] = useState([]);
@@ -71,42 +83,56 @@ export default function CreateRepo() {
 
   const handleFECheck = (name, value) => {
     frontEndTech[name].value = value;
+    if (frontEndTech.css.value == false && frontEndTech.js.value === false) {
+      frontEndTech.assets.value = false}
+    else {frontEndTech.assets.value = true} 
+      if (name === 'css'){
+        frontEndTech.assetsCSS.value = value
+      }
+       if (name === 'js'){
+        frontEndTech.assetsJS.value = value
+      }
+    
+    
     console.log(frontEndTech);
   };
 
   const genFiles = () => {
+    repoDetails.content =[]
+    setContentList([])
     let files = Object.entries(frontEndTech);
+    console.log(files)
     fileDefs.indexHTML.self.data = indexHTMLData;
-    let content = [];
+    let content = new Set()
     files.forEach((item) => {
       item[1].value
-        ? content.push(item[1].data)
+        ? content.add(item[1].data)
         : console.log(item[0], "is not checked");
       console.log(content);
     });
-    setContentList([...contentList, ...content]);
+    setContentList(Array.from(content));
   };
-  useEffect(() => {
-    setRepoDetails({ ...repoDetails, content: contentList });
-    console.log(contentList);
-  }, []);
-
+  
   const handleInput = (name, value) => {
-      console.log(name, value);
+    console.log(name, value);
     if (name === "kind" && value === "Front-End") {
       console.log("HandleInput if hit");
       repoDetails.frontend.name = "Custom" ;
     }
     setRepoDetails({ ...repoDetails, [name]: value });
   };
-
-  const handleSaveProject = async () => {
+  
+  const handleSaveProject = () => {
     console.log("Save Project Clicked");
-    await genFiles();
+    genFiles();
+    
+  };
+  
+  const handleWriteRepo = async () =>{
     try {
-    let newrepo= {name: repoDetails.name, kind: repoDetails.kind, content: repoDetails.content}
+      let newrepo= {name: repoDetails.name, kind: repoDetails.kind, content: JSON.stringify(repoDetails.content)}
       await writeRepo({
-        variables: {...newrepo}
+        variables: newrepo
       });
       if (writeRepoLoading) {
         console.log(`Loading. . .`);
@@ -117,9 +143,14 @@ export default function CreateRepo() {
     } catch (err) {
       throw err;
     }
-  };
+    setContentList([])
+    repoDetails.content =[]
+  }
   
   useEffect(() => console.dir(repoDetails));
+  useEffect(() => { 
+    setRepoDetails({ ...repoDetails, content: contentList })
+  }, [contentList]);
   
   return (
     <div>
@@ -224,6 +255,9 @@ export default function CreateRepo() {
                 <Container align="center" style={{ paddingTop: "2rem" }}>
                   <Button disabled={false} onClick={handleSaveProject}>
                     Save Project
+                  </Button>
+                  <Button disabled={false} onClick={handleWriteRepo}>
+                    Write to Server
                   </Button>
                 </Container>
               </Col>

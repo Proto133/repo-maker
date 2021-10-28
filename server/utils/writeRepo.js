@@ -1,9 +1,11 @@
 const path = require('path')
 const fs = require('fs');
+const getDirName = require('path').dirname
 
 const writeRepo = {
     file:({filePath, data}) =>{
-        fs.writeFile(filePath, data, (err) => {
+        console.log(filePath)
+      fs.writeFile(filePath, data, (err) => {
             if (err) throw err
         })
     },
