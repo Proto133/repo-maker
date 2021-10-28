@@ -17,6 +17,11 @@ const repoSchema = new Schema({
     },
     frontend: {
         type: String,
+    },
+    content:{
+        type: Schema.Types.ObjectId,
+        ref:'Content'
+
     }
 })
 
