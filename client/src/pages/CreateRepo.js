@@ -13,6 +13,13 @@ import FormControl from "react-bootstrap/FormControl";
 import Stack from "react-bootstrap/Stack";
 
 export default function CreateRepo() {
+  const [checked,setChecked] = useState({mongo:false,mysql:false})
+  const handleRadio = (name,other,value)=>{
+    console.log(name+':',value , other+':', !value);
+      setChecked({...checked, [name]:!value ,[other]:value})
+    console.log(checked)
+
+  }
   const [writeRepo, { writeRepoLoading, writeRepoError }] = useMutation(DIRECT_WRITE_REPO , console.log('Mutation'));
   const [repoDetails, setRepoDetails] = useState({
     name: null,
@@ -268,17 +275,23 @@ export default function CreateRepo() {
               <Col>
                 <h5> Database Type: </h5>
                 <Container gap={1}>
+                <fieldset>
+    <Form.Group as={Row} className="mb-3">
                   <Form.Check
                     label="MongoDB"
                     type="radio"
                     value="MongoDB"
+                    checked={!checked.mongo}
                     data-link="https://www.mongodb.com/"
-                    onClick={(e) =>
+                    onClick={(e) =>{
+                    handleRadio('mongo', 'mysql', e.target.checked)}}
+                    onChange={(e) => {
                       handleInput("db", {
                         name: e.target.value,
                         link: e.target.dataset.link,
                       })
-                    }
+                     
+                    }}
                     id="MongoDB-radio"
                     aria-label="MongoDB"
                   />
@@ -286,16 +299,21 @@ export default function CreateRepo() {
                     label="MySQL"
                     type="radio"
                     value="MySQL"
+                    checked={!checked.mysql}
                     data-link="https://www.mysql.com/"
-                    onClick={(e) =>
+                    onClick={(e)=>handleRadio('mysql', 'mongo', e.target.checked)}
+                    onChange={(e) =>{
                       handleInput("db", {
                         name: e.target.value,
                         link: e.target.dataset.link,
                       })
-                    }
+                      
+                    }}
                     id="MySQL-radio"
                     aria-label="MySQL"
                   />
+                  </Form.Group>
+                  </fieldset>
                 </Container>
               </Col>
               <Col>
