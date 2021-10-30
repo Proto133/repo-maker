@@ -8,7 +8,13 @@ let mysqlData = GEN_DATA.model.mysql({
         properties: [{
             name: 'id',
             type: 'INTEGER',
-            options: []
+            options: [{
+                name: 'PrimaryKey',
+                value: true,
+            }, {
+                name: 'AutoIncrement',
+                value: true,
+            }]
         }, {
             name: 'userId',
             type: 'INTEGER',
