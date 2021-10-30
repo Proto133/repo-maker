@@ -59,13 +59,19 @@ const sequelize = require('../config/connection');
             
 const ${name} = sequelize.define('${name.toLowerCase()}', {
     ${schema.properties?.map((prop) => {
-        let propOptions = prop.options?.map((option) => {
-            return (`${option.name} : ${option.value},`)
-        })
+        // let propOptions = prop.options?.map((option) => {
+        //     console.log(`Name: ${option.name} \n Value: ${option.value}\n__`)
+        //     return (`
+        //     ${option.name}:${option.value}`)
+        // })
+        // console.log(`${propOptions}`)
         return (`
         ${prop.name}: {
-            type: DataTypes.${prop.type}, ${!propOptions ? '' :`
-            ${propOptions}` }
+            type: DataTypes.${prop.type}, ${prop.options?.map((option) => {
+                    console.log(`Name: ${option.name} \n Value: ${option.value}\n__`)
+                    return (`
+            ${option.name}: ${option.value}`)
+                })} 
         }`)
     })}                
 },{

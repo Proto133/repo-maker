@@ -9,11 +9,14 @@ let mysqlData = GEN_DATA.model.mysql({
             name: 'id',
             type: 'INTEGER',
             options: [{
-                name: 'PrimaryKey',
-                value: true,
-            }, {
+                name: 'PK',
+                value: true
+            },{
                 name: 'AutoIncrement',
-                value: true,
+                value: true
+            },{
+                name: 'hidden Option C',
+                value: "'FuckOFF'"
             }]
         }, {
             name: 'userId',
